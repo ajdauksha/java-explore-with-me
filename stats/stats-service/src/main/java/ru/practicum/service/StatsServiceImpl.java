@@ -2,6 +2,7 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 import ru.practicum.mapper.HitMapper;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StatsServiceImpl implements StatsService {
 
     private final HitRepository hitRepository;
@@ -21,6 +23,7 @@ public class StatsServiceImpl implements StatsService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
+    @Transactional
     public void saveHit(AddHitRequestDto hitRequestDto) {
         Hit hit = HitMapper.toHit(hitRequestDto);
         hitRepository.save(hit);

@@ -1,5 +1,6 @@
 package ru.practicum.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 import ru.practicum.model.Hit;
@@ -7,6 +8,7 @@ import ru.practicum.model.Hit;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@UtilityClass
 public class HitMapper {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
