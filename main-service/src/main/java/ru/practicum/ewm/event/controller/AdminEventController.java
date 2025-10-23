@@ -1,9 +1,11 @@
 package ru.practicum.ewm.event.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventDto;
@@ -12,9 +14,6 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.request.repository.ParticipationRequestRepository;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +52,7 @@ public class AdminEventController {
         return events.stream()
                 .map(event -> {
                     Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(event.getId());
-                    return EventMapper.toFullDto(event, confirmedRequests, 0L); // views будет из сервиса статистики
+                    return EventMapper.toFullDto(event, confirmedRequests, 0L);
                 })
                 .collect(Collectors.toList());
     }
@@ -71,6 +70,6 @@ public class AdminEventController {
         Event updatedEvent = eventService.updateEventByAdmin(eventId, eventUpdate);
         Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(eventId);
 
-        return EventMapper.toFullDto(updatedEvent, confirmedRequests, 0L); // views будет из сервиса статистики
+        return EventMapper.toFullDto(updatedEvent, confirmedRequests, 0L);
     }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.ewm.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.user.dto.UserDto;
 
-import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public class EventDto {
@@ -130,7 +130,7 @@ public class EventDto {
 
         private Boolean requestModeration;
 
-        private String stateAction; // SEND_TO_REVIEW, CANCEL_REVIEW
+        private String stateAction;
 
         @Size(min = 3, max = 120)
         private String title;
@@ -162,7 +162,7 @@ public class EventDto {
 
         private Boolean requestModeration;
 
-        private String stateAction; // PUBLISH_EVENT, REJECT_EVENT
+        private String stateAction;
 
         @Size(min = 3, max = 120)
         private String title;

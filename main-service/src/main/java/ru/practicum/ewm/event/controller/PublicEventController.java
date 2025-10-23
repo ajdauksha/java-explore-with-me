@@ -1,6 +1,9 @@
 package ru.practicum.ewm.event.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,9 +15,6 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.request.repository.ParticipationRequestRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +44,6 @@ public class PublicEventController {
 
         log.info("Public: getting events with text: {}, categories: {}", text, categories);
 
-        // Логируем информацию для статистики
         log.info("Client IP: {}, Endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
 
         if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
@@ -56,7 +55,7 @@ public class PublicEventController {
         return events.stream()
                 .map(event -> {
                     Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(event.getId());
-                    return EventMapper.toShortDto(event, confirmedRequests, 0L); // views будет из сервиса статистики
+                    return EventMapper.toShortDto(event, confirmedRequests, 0L);
                 })
                 .collect(Collectors.toList());
     }
@@ -65,12 +64,11 @@ public class PublicEventController {
     public EventDto.EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
         log.info("Public: getting event with id: {}", id);
 
-        // Логируем информацию для статистики
         log.info("Client IP: {}, Endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
 
         Event event = eventService.getPublicEvent(id);
         Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(id);
 
-        return EventMapper.toFullDto(event, confirmedRequests, 0L); // views будет из сервиса статистики
+        return EventMapper.toFullDto(event, confirmedRequests, 0L);
     }
 }

@@ -54,6 +54,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByIdIn(List<Long> eventIds);
 
-    @Query("SELECT e FROM Event e WHERE e.id IN :eventIds AND e.state = 'PUBLISHED'")
-    List<Event> findPublishedEventsByIds(@Param("eventIds") List<Long> eventIds);
 }

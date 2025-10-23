@@ -1,7 +1,6 @@
 package ru.practicum.ewm.request.mapper;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Component;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.model.ParticipationRequest;
 

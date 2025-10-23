@@ -1,11 +1,11 @@
 package ru.practicum.ewm.event.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.user.model.User;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

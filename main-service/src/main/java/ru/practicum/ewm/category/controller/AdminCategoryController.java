@@ -1,5 +1,6 @@
 package ru.practicum.ewm.category.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,6 @@ import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.service.CategoryService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/admin/categories")

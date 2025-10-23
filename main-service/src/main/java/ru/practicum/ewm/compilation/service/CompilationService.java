@@ -12,7 +12,6 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.DataConflictException;
 
-import java.nio.channels.NotYetBoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,6 @@ public class CompilationService {
             throw new DataConflictException("Compilation with title " + compilation.getTitle() + " already exists");
         }
 
-        // Загружаем события по ID
         if (compilation.getEvents() != null && !compilation.getEvents().isEmpty()) {
             Set<Long> eventIds = compilation.getEvents().stream()
                     .map(Event::getId)

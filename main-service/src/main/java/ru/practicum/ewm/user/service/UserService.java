@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
-    private final ParticipationRequestRepository requestRepository;
 
     @Transactional
     public User createUser(User user) {
@@ -66,14 +64,4 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    @Transactional
-    public void deleteUsers(List<Long> userIds) {
-        log.info("Deleting users with ids: {}", userIds);
-
-        for (Long userId : userIds) {
-            if (userRepository.existsById(userId)) {
-                userRepository.deleteById(userId);
-            }
-        }
-    }
 }

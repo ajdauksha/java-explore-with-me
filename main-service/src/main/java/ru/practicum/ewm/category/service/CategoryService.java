@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
-import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.DataConflictException;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.NoSuchElementException;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final EventRepository eventRepository;
 
     @Transactional
     public Category createCategory(Category category) {

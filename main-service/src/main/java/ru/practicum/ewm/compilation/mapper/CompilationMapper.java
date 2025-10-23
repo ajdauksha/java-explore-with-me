@@ -1,8 +1,6 @@
 package ru.practicum.ewm.compilation.mapper;
 
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Component;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.event.mapper.EventMapper;
@@ -52,7 +50,7 @@ public class CompilationMapper {
         return CompilationDto.CompilationResponse.builder()
                 .id(compilation.getId())
                 .events(compilation.getEvents().stream()
-                        .map(event -> EventMapper.toShortDto(event, 0L, 0L)) // confirmedRequests и views будут заполнены в сервисе
+                        .map(event -> EventMapper.toShortDto(event, 0L, 0L))
                         .collect(Collectors.toList()))
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())

@@ -7,13 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.category.service.CategoryService;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Event.EventState;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exception.DataConflictException;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.service.UserService;
-import ru.practicum.ewm.category.service.CategoryService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +36,6 @@ public class EventService {
         User initiator = userService.getUserById(userId);
         event.setInitiator(initiator);
 
-        // Проверяем, что дата события не раньше чем через 2 часа
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new DataConflictException("Event date must be at least 2 hours from now");
         }
@@ -47,7 +46,7 @@ public class EventService {
     public List<Event> getUserEvents(Long userId, Integer from, Integer size) {
         log.info("Getting events for user: {}, from: {}, size: {}", userId, from, size);
 
-        userService.getUserById(userId); // Проверяем существование пользователя
+        userService.getUserById(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.findByInitiatorId(userId, pageable);
     }
@@ -65,20 +64,16 @@ public class EventService {
 
         Event existingEvent = getUserEvent(userId, eventId);
 
-        // Проверяем, что событие можно редактировать
         if (existingEvent.getState() != EventState.PENDING && existingEvent.getState() != EventState.CANCELED) {
             throw new DataConflictException("Only pending or canceled events can be changed");
         }
 
-        // Проверяем дату события
         if (updatedEvent.getEventDate() != null &&
                 updatedEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new DataConflictException("Event date must be at least 2 hours from now");
         }
 
-        // Обновляем поля
         updateEventFields(existingEvent, updatedEvent);
-//        existingEvent.setState(EventState.PENDING); // После изменения возвращаем на модерацию
 
         return eventRepository.save(existingEvent);
     }
@@ -99,7 +94,6 @@ public class EventService {
         Event existingEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NoSuchElementException("Event not found with id: " + eventId));
 
-        // Проверки для администратора
         if (updatedEvent.getStateAction() != null) {
             handleAdminStateAction(existingEvent, updatedEvent.getStateAction());
         }
@@ -113,7 +107,6 @@ public class EventService {
                                        Boolean onlyAvailable, String sort, Integer from, Integer size) {
         log.info("Getting public events with filters");
 
-        // Если диапазон дат не указан, ищем события в будущем
         if (rangeStart == null && rangeEnd == null) {
             rangeStart = LocalDateTime.now();
         }
@@ -133,20 +126,6 @@ public class EventService {
         }
 
         return event;
-    }
-
-    @Transactional
-    public Event cancelEvent(Long userId, Long eventId) {
-        log.info("Canceling event: {} by user: {}", eventId, userId);
-
-        Event event = getUserEvent(userId, eventId);
-
-        if (event.getState() != EventState.PENDING) {
-            throw new DataConflictException("Only pending events can be canceled");
-        }
-
-        event.setState(EventState.CANCELED);
-        return eventRepository.save(event);
     }
 
     private void updateEventFields(Event existing, Event updated) {

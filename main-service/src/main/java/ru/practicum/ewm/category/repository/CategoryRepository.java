@@ -6,12 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.ewm.category.model.Category;
 
-import java.util.Optional;
-
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
-    Optional<Category> findByName(String name);
 
     Boolean existsByName(String name);
 

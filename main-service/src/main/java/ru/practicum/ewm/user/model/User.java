@@ -1,8 +1,8 @@
 package ru.practicum.ewm.user.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity

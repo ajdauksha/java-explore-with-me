@@ -30,7 +30,7 @@ public class ParticipationRequestDto {
     @AllArgsConstructor
     public static class EventRequestStatusUpdateRequest {
         private List<Long> requestIds;
-        private String status; // CONFIRMED, REJECTED
+        private String status;
     }
 
     @Data

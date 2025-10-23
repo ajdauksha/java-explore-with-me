@@ -1,9 +1,9 @@
 package ru.practicum.ewm.compilation.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.ewm.event.model.Event;
 
-import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

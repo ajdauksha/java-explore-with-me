@@ -41,7 +41,6 @@ public class RequestService {
         }
 
 
-        // Проверки бизнес-логики
         validateRequestCreation(userId, event);
 
         ParticipationRequest request = ParticipationRequest.builder()
@@ -49,7 +48,6 @@ public class RequestService {
                 .event(event)
                 .build();
 
-        // Если пре-модерация отключена, автоматически подтверждаем
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(ParticipationRequest.RequestStatus.CONFIRMED);
         }
@@ -82,7 +80,6 @@ public class RequestService {
     public List<ParticipationRequest> getEventRequests(Long userId, Long eventId) {
         log.info("Getting requests for event: {} by user: {}", eventId, userId);
 
-        // Проверяем, что пользователь является инициатором события
         Event event = eventService.getUserEvent(userId, eventId);
         return requestRepository.findByEventInitiatorIdAndEventId(userId, eventId);
     }
@@ -146,22 +143,18 @@ public class RequestService {
     }
 
     private void validateRequestCreation(Long userId, Event event) {
-        // Проверяем, что пользователь не является инициатором события
         if (event.getInitiator().getId().equals(userId)) {
             throw new DataConflictException("Initiator cannot request participation in their own event");
         }
 
-        // Проверяем, что событие опубликовано
         if (event.getState() != EventState.PUBLISHED) {
             throw new DataConflictException("Cannot participate in unpublished event");
         }
 
-        // Проверяем, что не было предыдущей заявки
         if (requestRepository.existsByEventIdAndRequesterId(event.getId(), userId)) {
             throw new DataConflictException("Request already exists for this event and user");
         }
 
-        // Проверяем лимит участников
         Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(event.getId());
         if (event.getParticipantLimit() > 0 && confirmedCount >= event.getParticipantLimit()) {
             throw new DataConflictException("The participant limit has been reached");
