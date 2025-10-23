@@ -8,6 +8,9 @@ import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 import ru.practicum.service.StatsService;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -31,10 +34,10 @@ public class StatsController {
             @RequestParam String start,
             @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(defaultValue = "false") Boolean unique) {
+            @RequestParam(defaultValue = "false") Boolean unique) throws UnsupportedEncodingException {
 
         log.info("Getting stats: start={}, end={}, uris={}, unique={}", start, end, uris, unique);
 
-        return statsService.getStats(start, end, uris, unique);
+        return statsService.getStats(URLDecoder.decode(start, StandardCharsets.UTF_8), URLDecoder.decode(end, StandardCharsets.UTF_8), uris, unique);
     }
 }

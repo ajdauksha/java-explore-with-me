@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.StatsClient;
+import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.ewm.event.dto.EventDto;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.model.Event;
@@ -28,6 +30,7 @@ public class PublicEventController {
 
     private final EventService eventService;
     private final ParticipationRequestRepository requestRepository;
+    private final StatsClient statsClient;
 
     @GetMapping
     public List<EventDto.EventShortDto> getEvents(
@@ -44,7 +47,7 @@ public class PublicEventController {
 
         log.info("Public: getting events with text: {}, categories: {}", text, categories);
 
-        log.info("Client IP: {}, Endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
+        recordEventView(request.getRemoteAddr());
 
         if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
             throw new ValidationException("End date must be after start date");
@@ -64,11 +67,40 @@ public class PublicEventController {
     public EventDto.EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
         log.info("Public: getting event with id: {}", id);
 
-        log.info("Client IP: {}, Endpoint path: {}", request.getRemoteAddr(), request.getRequestURI());
+        recordEventView(id, request.getRemoteAddr());
 
         Event event = eventService.getPublicEvent(id);
         Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(id);
 
-        return EventMapper.toFullDto(event, confirmedRequests, 0L);
+        long views = getViews(id, event);
+
+        return EventMapper.toFullDto(event, confirmedRequests, views);
     }
+
+    public void recordEventView(Long eventId, String userIp) {
+        log.info("Client IP: {}, Endpoint path: {}", userIp, "/events/" + eventId);
+        statsClient.saveHit(AddHitRequestDto.builder()
+                .app("ewm-main-service")
+                .uri("/events/" + eventId)
+                .ip(userIp)
+                .timestamp(LocalDateTime.now().toString())
+                .build());
+    }
+
+    public void recordEventView(String userIp) {
+        log.info("Client IP: {}, Endpoint path: {}", userIp, "/events");
+        statsClient.saveHit(AddHitRequestDto.builder()
+                .app("ewm-main-service")
+                .uri("/events")
+                .ip(userIp)
+                .timestamp(LocalDateTime.now().toString())
+                .build());
+    }
+
+    private int getViews(Long id, Event event) {
+        return statsClient
+                .getStats(event.getPublishedOn(), LocalDateTime.now(), List.of("/events/" + id), true)
+                .size();
+    }
+
 }
