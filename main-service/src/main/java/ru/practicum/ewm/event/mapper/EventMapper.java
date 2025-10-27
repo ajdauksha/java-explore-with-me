@@ -66,13 +66,6 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventDto.Location toLocationDto(Event event) {
-        return EventDto.Location.builder()
-                .lat(event.getLocationLat())
-                .lon(event.getLocationLon())
-                .build();
-    }
-
     public static void updateEventFromUserRequest(EventDto.UpdateEventUserRequest dto, Event event) {
         if (dto.getAnnotation() != null) event.setAnnotation(dto.getAnnotation());
         if (dto.getDescription() != null) event.setDescription(dto.getDescription());
