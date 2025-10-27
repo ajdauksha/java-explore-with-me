@@ -8,7 +8,6 @@ import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 import ru.practicum.service.StatsService;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
