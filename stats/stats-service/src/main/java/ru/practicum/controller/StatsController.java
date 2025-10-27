@@ -34,7 +34,7 @@ public class StatsController {
             @RequestParam String start,
             @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(defaultValue = "false") Boolean unique) throws UnsupportedEncodingException {
+            @RequestParam(defaultValue = "false") Boolean unique) {
 
         log.info("Getting stats: start={}, end={}, uris={}, unique={}", start, end, uris, unique);
 

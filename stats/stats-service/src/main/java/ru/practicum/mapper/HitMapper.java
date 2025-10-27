@@ -11,14 +11,12 @@ import java.time.format.DateTimeFormatter;
 @UtilityClass
 public class HitMapper {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     public static Hit toHit(AddHitRequestDto endpointHit) {
         return Hit.builder()
                 .app(endpointHit.getApp())
                 .uri(endpointHit.getUri())
                 .ip(endpointHit.getIp())
-                .timestamp(LocalDateTime.parse(endpointHit.getTimestamp(), FORMATTER))
+                .timestamp(LocalDateTime.parse(endpointHit.getTimestamp()))
                 .build();
     }
 

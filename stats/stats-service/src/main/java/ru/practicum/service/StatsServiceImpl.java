@@ -20,8 +20,6 @@ public class StatsServiceImpl implements StatsService {
 
     private final HitRepository hitRepository;
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     @Override
     @Transactional
     public void saveHit(AddHitRequestDto hitRequestDto) {
@@ -42,7 +40,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     private LocalDateTime parseDateTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, FORMATTER);
+        return LocalDateTime.parse(dateTime);
     }
 
 }

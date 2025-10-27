@@ -21,7 +21,6 @@ import java.util.List;
 public class StatsClient {
     private final RestTemplate restTemplate;
     private final String serverUrl;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public StatsClient(@Value("${stats.server-url:http://localhost:9090}") String serverUrl) {
         this.restTemplate = new RestTemplate();
@@ -62,7 +61,7 @@ public class StatsClient {
 
     public List<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end,
                                            List<String> uris, Boolean unique) {
-        return getStats(start.format(formatter), end.format(formatter), uris, unique);
+        return getStats(start.toString(), end.toString(), uris, unique);
     }
 
     public List<StatsResponseDto> getStats(String start, String end,
