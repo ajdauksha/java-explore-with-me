@@ -35,6 +35,6 @@ services:
     image: postgres:16-alpine
     container_name: main-db-container
     environment:
-      - POSTGRES_DB=main-db
+      - POSTGRES_DB=ewm
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
