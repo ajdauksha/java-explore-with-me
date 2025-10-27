@@ -11,6 +11,7 @@ import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 public class StatsClient {
     private final RestTemplate restTemplate;
     private final String serverUrl;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StatsClient(@Value("${stats.server-url:http://localhost:9090}") String serverUrl) {
         this.restTemplate = new RestTemplate();
@@ -60,7 +62,7 @@ public class StatsClient {
 
     public List<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end,
                                            List<String> uris, Boolean unique) {
-        return getStats(start.toString(), end.toString(), uris, unique);
+        return getStats(start.format(FORMATTER), end.format(FORMATTER), uris, unique);
     }
 
     public List<StatsResponseDto> getStats(String start, String end,

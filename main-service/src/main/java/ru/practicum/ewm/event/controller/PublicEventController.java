@@ -18,6 +18,7 @@ import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.request.repository.ParticipationRequestRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class PublicEventController {
     private final EventService eventService;
     private final ParticipationRequestRepository requestRepository;
     private final StatsClient statsClient;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping
     public List<EventDto.EventShortDto> getEvents(
@@ -83,7 +85,7 @@ public class PublicEventController {
                 .app("ewm-main-service")
                 .uri("/events/" + eventId)
                 .ip(userIp)
-                .timestamp(LocalDateTime.now().toString())
+                .timestamp(LocalDateTime.now().format(FORMATTER))
                 .build());
     }
 
@@ -93,7 +95,7 @@ public class PublicEventController {
                 .app("ewm-main-service")
                 .uri("/events")
                 .ip(userIp)
-                .timestamp(LocalDateTime.now().toString())
+                .timestamp(LocalDateTime.now().format(FORMATTER))
                 .build());
     }
 
