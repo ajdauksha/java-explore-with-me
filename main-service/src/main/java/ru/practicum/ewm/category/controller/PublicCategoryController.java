@@ -23,7 +23,7 @@ public class PublicCategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto.CategoryResponse> getCategories(
+    public List<CategoryDto> getCategories(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10") @Positive Integer size) {
 
@@ -34,7 +34,7 @@ public class PublicCategoryController {
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto.CategoryResponse getCategory(@PathVariable Long catId) {
+    public CategoryDto getCategory(@PathVariable Long catId) {
         log.info("Public: getting category with id: {}", catId);
         return CategoryMapper.toResponse(categoryService.getCategoryById(catId));
     }

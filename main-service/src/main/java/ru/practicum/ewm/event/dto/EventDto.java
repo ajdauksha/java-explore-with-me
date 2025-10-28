@@ -68,7 +68,7 @@ public class EventDto {
     public static class EventShortDto {
         private Long id;
         private String annotation;
-        private CategoryDto.CategoryResponse category;
+        private CategoryDto category;
         private Long confirmedRequests;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime eventDate;
@@ -85,7 +85,7 @@ public class EventDto {
     public static class EventFullDto {
         private Long id;
         private String annotation;
-        private CategoryDto.CategoryResponse category;
+        private CategoryDto category;
         private Long confirmedRequests;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdOn;

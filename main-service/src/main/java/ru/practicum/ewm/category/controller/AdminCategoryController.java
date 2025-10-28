@@ -1,6 +1,5 @@
 package ru.practicum.ewm.category.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,11 +9,12 @@ import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.service.CategoryService;
+import ru.practicum.ewm.validation.Create;
+import ru.practicum.ewm.validation.Update;
 
 @RestController
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
-@Validated
 @Slf4j
 public class AdminCategoryController {
 
@@ -22,7 +22,7 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto.CategoryResponse createCategory(@Valid @RequestBody CategoryDto.CategoryRequest categoryDto) {
+    public CategoryDto createCategory(@RequestBody @Validated(Create.class) CategoryDto categoryDto) {
         log.info("Admin: creating category {}", categoryDto.getName());
         Category category = CategoryMapper.toEntity(categoryDto);
         Category created = categoryService.createCategory(category);
@@ -30,12 +30,12 @@ public class AdminCategoryController {
     }
 
     @PatchMapping("/{catId}")
-    public CategoryDto.CategoryResponse updateCategory(
+    public CategoryDto updateCategory(
             @PathVariable Long catId,
-            @Valid @RequestBody CategoryDto.CategoryRequest categoryDto) {
+            @RequestBody @Validated(Update.class) CategoryDto categoryDto) {
 
         log.info("Admin: updating category with id: {}", catId);
-        Category category = CategoryMapper.toEntity(new CategoryDto.CategoryRequest(categoryDto.getName()));
+        Category category = CategoryMapper.toEntity(CategoryDto.builder().name(categoryDto.getName()).build());
         category.setId(catId);
         Category updated = categoryService.updateCategory(catId, category);
         return CategoryMapper.toResponse(updated);
