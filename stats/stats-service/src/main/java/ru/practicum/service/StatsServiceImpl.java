@@ -1,5 +1,6 @@
 package ru.practicum.service;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +20,8 @@ import java.util.List;
 public class StatsServiceImpl implements StatsService {
 
     private final HitRepository hitRepository;
-
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 
     @Override
     @Transactional
@@ -33,6 +34,10 @@ public class StatsServiceImpl implements StatsService {
     public List<StatsResponseDto> getStats(String start, String end, List<String> uris, Boolean unique) {
         LocalDateTime startTime = parseDateTime(start);
         LocalDateTime endTime = parseDateTime(end);
+
+        if (startTime.isAfter(endTime)) {
+            throw new ValidationException("Start time must be before end time");
+        }
 
         if (Boolean.TRUE.equals(unique)) {
             return hitRepository.getUniqueStats(startTime, endTime, uris);

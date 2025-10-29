@@ -1,15 +1,15 @@
 package ru.practicum.client;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.dto.AddHitRequestDto;
 import ru.practicum.dto.StatsResponseDto;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -17,12 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@Service
 public class StatsClient {
     private final RestTemplate restTemplate;
     private final String serverUrl;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public StatsClient(String serverUrl) {
+    public StatsClient(@Value("${stats.server-url:http://localhost:9090}") String serverUrl) {
         this.restTemplate = new RestTemplate();
         this.serverUrl = serverUrl;
     }
@@ -61,7 +62,7 @@ public class StatsClient {
 
     public List<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end,
                                            List<String> uris, Boolean unique) {
-        return getStats(start.format(formatter), end.format(formatter), uris, unique);
+        return getStats(start.format(FORMATTER), end.format(FORMATTER), uris, unique);
     }
 
     public List<StatsResponseDto> getStats(String start, String end,
@@ -69,11 +70,11 @@ public class StatsClient {
         log.debug("Getting stats: start={}, end={}, uris={}, unique={}", start, end, uris, unique);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverUrl + "/stats")
-                .queryParam("start", encodeValue(start))
-                .queryParam("end", encodeValue(end));
+                .queryParam("start", start)
+                .queryParam("end", end);
 
         if (uris != null && !uris.isEmpty()) {
-            uris.forEach(uri -> builder.queryParam("uris", encodeValue(uri)));
+            uris.forEach(uri -> builder.queryParam("uris", uri));
         }
 
         if (unique != null) {
@@ -111,7 +112,4 @@ public class StatsClient {
         return getStats(start, end, uris, true);
     }
 
-    private String encodeValue(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
-    }
 }
